@@ -37,7 +37,7 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(initialIndex: 0, length: 4, vsync: this);
+    _tabController = TabController(initialIndex: 0, length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
         tabIndex.value = _tabController.index;
@@ -109,7 +109,7 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ['Dog', 'Cat', 'Bird', 'Fish'];
+    final tabs = ['Dog', 'Cat', 'Bird', 'Fish', 'Monkey'];
 
     return Scaffold(
       appBar: AppBar(
@@ -151,6 +151,13 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
             imageUrl: 'https://i.imgur.com/dvvrIwB.jpeg',
             title: 'Fish',
             subtitle: 'Blub blub! I am fish',
+          ),
+
+          // Tab 5 - Monkey
+          _buildImageTab(
+            imageUrl: 'https://i.imgur.com/hTgL4DG_d.webp?maxwidth=520&shape=thumb&fidelity=high',
+            title: 'Monkey',
+            subtitle: 'Hoo hoo! I am monkey',
           ),
         ],
       ),
