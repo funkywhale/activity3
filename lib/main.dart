@@ -8,10 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: DefaultTabController(
-        length: 4, // changed to 4
-        child: _TabsNonScrollableDemo(),
-      ),
+      home: DefaultTabController(length: 4, child: _TabsNonScrollableDemo()),
     );
   }
 }
@@ -40,11 +37,7 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      initialIndex: 0,
-      length: 4, // changed to 4
-      vsync: this,
-    );
+    _tabController = TabController(initialIndex: 0, length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
         tabIndex.value = _tabController.index;
@@ -60,35 +53,68 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
     super.dispose();
   }
 
-  // function to show alert
-  void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Alert!'),
-          content: Text('Test alert!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+  // Helper method to create image tabs
+  Widget _buildImageTab({
+    required String imageUrl,
+    required String title,
+    required String subtitle,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Image.network(
+              imageUrl,
+              width: 150,
+              height: 150,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return CircularProgressIndicator();
               },
-              child: Text('Okay'),
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 150,
+                  height: 150,
+                  color: Colors.grey[300],
+                  child: Icon(Icons.error, size: 50),
+                );
+              },
             ),
-          ],
-        );
-      },
+          ),
+          SizedBox(height: 20),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 16,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4'];
+    final tabs = ['Dog', 'Cat', 'Bird', 'Fish'];
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Tabs Demo'),
+        title: Text('Pet App Demo'),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: false,
@@ -98,194 +124,33 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
       body: TabBarView(
         controller: _tabController,
         children: [
-          // tab 1
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Tab 1!',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Some custom text.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () => _showAlertDialog(context),
-                  child: Text('Show Alert Dialog'),
-                ),
-              ],
-            ),
+          // Tab 1 - Dog
+          _buildImageTab(
+            imageUrl:
+                'https://i.imgur.com/qpcwgTN_d.webp?maxwidth=520&shape=thumb&fidelity=high',
+            title: 'Dog',
+            subtitle: 'Bark bark! I am a puppy.',
           ),
 
-          // tab 2
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    labelText: 'Enter text here',
-                    border: OutlineInputBorder(),
-                    hintText: 'Type something...',
-                  ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: Image.network(
-                    'https://i.imgur.com/qpcwgTN_d.webp?maxwidth=520&shape=thumb&fidelity=high',
-                    width: 150,
-                    height: 150,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return CircularProgressIndicator();
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 150,
-                        height: 150,
-                        color: Colors.grey[300],
-                        child: Icon(Icons.error, size: 50),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Image loaded from URL',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                ),
-              ],
-            ),
+          // Tab 2 - Cat
+          _buildImageTab(
+            imageUrl: 'https://i.imgur.com/6QDK7ki.png',
+            title: 'Cat',
+            subtitle: 'Meow! I am a cat.',
           ),
 
-          // tab 3
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Button!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('You pressed the button! Hooray!'),
-                        duration: Duration(seconds: 2),
-                        action: SnackBarAction(
-                          label: 'Dismiss',
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  ),
-                  child: Text('Click me'),
-                ),
-              ],
-            ),
+          // Tab 3 - Bird
+          _buildImageTab(
+            imageUrl: 'https://i.imgur.com/t359V95.jpeg',
+            title: 'Bird',
+            subtitle: 'Tweet tweet! I am a birdy',
           ),
 
-          // tab 4
-          ListView(
-            padding: EdgeInsets.all(16.0),
-            children: [
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.blue),
-                  title: Text('Adam'),
-                  subtitle: Text('Analyst'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Tapped on Adam')));
-                  },
-                ),
-              ),
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.green),
-                  title: Text('Bob'),
-                  subtitle: Text('Builder'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Tapped on Bob')));
-                  },
-                ),
-              ),
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.orange),
-                  title: Text('Charlie'),
-                  subtitle: Text('Commander'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tapped on Charlie')),
-                    );
-                  },
-                ),
-              ),
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.purple),
-                  title: Text('David'),
-                  subtitle: Text('Driver'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Tapped on David')));
-                  },
-                ),
-              ),
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.red),
-                  title: Text('Ezekiel'),
-                  subtitle: Text('Expert'),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tapped on Ezekiel')),
-                    );
-                  },
-                ),
-              ),
-            ],
+          // Tab 4 - Fish
+          _buildImageTab(
+            imageUrl: 'https://i.imgur.com/dvvrIwB.jpeg',
+            title: 'Fish',
+            subtitle: 'Blub blub! I am fish',
           ),
         ],
       ),
